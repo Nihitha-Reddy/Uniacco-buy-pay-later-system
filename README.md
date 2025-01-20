@@ -195,7 +195,56 @@ Response:
     }
   ]
 }
-arduino
+
+
+UML DIAGRAM
++------------------+        +---------------------+        +----------------------+
+|      User        |        |       Purchase      |        |   RepaymentPlan      |
++------------------+        +---------------------+        +----------------------+
+| - user_id: Char  |        | - purchase_id: Char |        | - plan_id: Char      |
+| - name: String   |        | - purchase_amount:  |        | - user_id: FK        |
+| - email: String  |        |   Decimal           |        | - purchase_id: FK    |
+| - credit_limit:  |        | - purchase_date:    |        | - total_amount:      |
+|   Decimal        |        |   Date              |        |   Decimal            |
+| - available_credit:|      | - is_emi: Boolean   |        | - monthly_emi:       |
+|   Decimal        |        | - repayment_plan: FK|        |   Decimal            |
+| - credit_score:  |        |                     |        | - interest_rate:     |
+|   Integer        |        |                     |        |   Decimal            |
++------------------+        |                     |        | - total_months:      |
+        |                  +---------------------+        |   Integer            |
+        |                           |                     | - penalty_rate:      |
+        |                           |                     |   Decimal            |
+        |                           |                     | - installments: JSON |
+        |                           |                     +----------------------+
+        |                           |                               ^
+        |                           |                               |
+        |                           |                               |
+        |            +--------------+------------+                  |
+        |            |                           |                  |
+        |        +------------------+        +-------------------+  |
+        |        |      Payment      |        |     Penalty       |  |
+        |        +------------------+        +-------------------+  |
+        |        | - payment_id: Char|        | - penalty_id: Char|
+        |        | - payment_amount: |        | - penalty_amount: |
+        |        |   Decimal         |        |   Decimal         |
+        |        | - payment_date:    |        | - penalty_date:   |
+        |        |   Date            |        |   Date            |
+        |        | - repayment_plan:  |        | - user_id: FK     |
+        |        |   FK               |        | - repayment_plan: |
+        |        +------------------+        |   FK              |
+        |                                     +-------------------+   
+        |
+        v
+   +-----------------------------------+
+   |        Report (Admin Use)         |
+   +-----------------------------------+
+   | - report_id: Char                |
+   | - overdue_user_ids: List of Char |
+   | - overdue_repayment_plan_ids:    |
+   |   List of Char                   |
+   | - overdue_amounts: List of Decimal|
+   +-----------------------------------+
+
 
 
 
