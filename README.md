@@ -122,9 +122,6 @@ Admins can generate reports to see overdue payments, overdue users, and repaymen
 }
 Response:
 
-json
-Copy
-Edit
 {
   "message": "User registered successfully."
 }
@@ -133,9 +130,6 @@ POST /purchase
 
 Request Body:
 
-json
-Copy
-Edit
 {
   "user_id": "12345",
   "purchase_amount": 10000,
@@ -159,9 +153,6 @@ Request Body:
 }
 Response:
 
-json
-Copy
-Edit
 {
   "message": "Payment recorded successfully."
 }
