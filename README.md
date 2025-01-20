@@ -3,6 +3,31 @@
 ## Overview
 This document outlines the design and structure of a **Buy Now, Pay Later (BNPL)** system that includes features for user registration, credit management, purchase handling, repayment scheduling, penalty calculations, and reporting.
 
+**Technologies**
+Django: Web framework used for backend implementation.
+Python: Programming language used for the business logic.
+SQLite/PostgreSQL/MySQL: Databases for storing user and transactional data.
+Django REST Framework: For creating API endpoints to interact with the system.
+
+**System Workflow**
+1. User Registration:
+Users register with basic details such as name, email, credit score, and credit limit.
+The system checks the credit score and available credit before allowing purchases.
+2. Purchase Recording:
+Users make purchases, which are either paid upfront or through EMI (Equated Monthly Installments).
+For EMI purchases, a repayment plan is created that includes the total amount, interest rate, EMI amount, and duration.
+3. Repayment Plan:
+The system calculates the EMI based on the principal amount, interest rate, and tenure.
+Installment schedules are generated, and the user is expected to make payments according to the due dates.
+Penalties are applied for overdue payments.
+4. Payment Recording:
+Users make payments, which are recorded against specific repayment plans.
+Payments reduce the outstanding balance of the repayment plan and update the available credit for the user.
+5. Penalty Management:
+Penalties are calculated if the user misses an EMI payment deadline. The penalty is applied to the total outstanding amount.
+6. Report Generation:
+Admins can generate reports to see overdue payments, overdue users, and repayment statuses.
+
 ### Assumptions:
 - **Credit Limit**: Users have a fixed maximum credit limit (e.g., ₹50,000) for purchases.
 - **Repayment Period**: EMI options are available for 3, 6, or 12 months.
