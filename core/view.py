@@ -1,32 +1,52 @@
-from rest_framework import serializers
+from rest_framework import viewsets
+from rest_framework.response import Response
 from .models import User, Purchase, RepaymentPlan, Payment, Penalty
+from .serializers import UserSerializer, PurchaseSerializer, RepaymentPlanSerializer, PaymentSerializer, PenaltySerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['user_id', 'name', 'email', 'credit_limit', 'available_credit', 'credit_score']
+# User ViewSet
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
-class PurchaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Purchase
-        fields = ['user', 'purchase_amount', 'purchase_date', 'is_emi', 'repayment_plan']
+# Purchase ViewSet
+class PurchaseViewSet(viewsets.ModelViewSet):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
+
+    def perform_create(self, serializer):
+        purchase = serializer.save()
+        if purchase.is_emi:
+            purchase.create_repayment_plan(emi_months=12, interest_rate=10)  # Example: 12-month EMI with 10% interest
 
 
-class RepaymentPlanSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RepaymentPlan
-        fields = ['user', 'purchase', 'total_amount', 'monthly_emi', 'interest_rate', 'total_months', 'penalty_rate', 'installments']
+# Repayment Plan ViewSet
+class RepaymentPlanViewSet(viewsets.ModelViewSet):
+    queryset = RepaymentPlan.objects.all()
+    serializer_class = RepaymentPlanSerializer
+
+    def perform_create(self, serializer):
+        plan = serializer.save()
+        plan.generate_repayment_schedule()
 
 
-class PaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payment
-        fields = ['user', 'payment_amount', 'payment_date', 'repayment_plan']
+# Payment ViewSet
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.update_credit()
+        payment.apply_payment_to_plan()
 
 
-class PenaltySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Penalty
-        fields = ['user', 'repayment_plan', 'penalty_amount', 'penalty_date']
+# Penalty ViewSet
+class PenaltyViewSet(viewsets.ModelViewSet):
+    queryset = Penalty.objects.all()
+    serializer_class = PenaltySerializer
+
+    def perform_create(self, serializer):
+        penalty = serializer.save()
+        penalty.apply_penalty(overdue_months=1)  # Example: apply penalty for 1 month overdue
