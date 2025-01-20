@@ -1,21 +1,32 @@
 from rest_framework import serializers
-from .models import User, Purchase, RepaymentPlan, Payment
+from .models import User, Purchase, RepaymentPlan, Payment, Penalty
+
+
 class UserSerializer(serializers.ModelSerializer):
-   class Meta:
-       model = User
-       fields = ['id', 'name', 'credit_limit', 'available_credit']
+    class Meta:
+        model = User
+        fields = ['user_id', 'name', 'email', 'credit_limit', 'available_credit', 'credit_score']
+
 
 class PurchaseSerializer(serializers.ModelSerializer):
-   class Meta:
-       model = Purchase
-       fields = ['id', 'user', 'amount', 'date', 'is_em_instalment']
+    class Meta:
+        model = Purchase
+        fields = ['user', 'purchase_amount', 'purchase_date', 'is_emi', 'repayment_plan']
+
 
 class RepaymentPlanSerializer(serializers.ModelSerializer):
-   class Meta:
-       model = RepaymentPlan
-       fields = ['id', 'user', 'purchase', 'number_of_months', 'interest_rate', 'monthly_installment']
+    class Meta:
+        model = RepaymentPlan
+        fields = ['user', 'purchase', 'total_amount', 'monthly_emi', 'interest_rate', 'total_months', 'penalty_rate', 'installments']
+
 
 class PaymentSerializer(serializers.ModelSerializer):
-   class Meta:
-       model = Payment
-       fields = ['id', 'user', 'amount', 'date', 'repayment_plan']
+    class Meta:
+        model = Payment
+        fields = ['user', 'payment_amount', 'payment_date', 'repayment_plan']
+
+
+class PenaltySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Penalty
+        fields = ['user', 'repayment_plan', 'penalty_amount', 'penalty_date']
